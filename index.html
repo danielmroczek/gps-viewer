@@ -13,13 +13,9 @@
       src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
       defer
     ></script>
-    <script
-      src="https://cdn.jsdelivr.net/npm/vue@3.4.21/dist/vue.global.min.js"
-      defer
-    ></script>
-    <script src="script.js" type="module" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@3.4.21/dist/vue.global.prod.js"></script>
   </head>
-  
+
   <body>
     <div id="app" class="container mt-5">
       <!-- <div class="row">
@@ -30,17 +26,71 @@
           <div v-if="loading" class="text-center">Loading...</div>
           <div v-else>
             <p v-if="!error" class="text-center">
-              Latitude: {{ latitude }}<br />
-              Longitude: {{ longitude }}<br />
-              Accuracy: {{ accuracy }} meters<br />
-              Timestamp: {{ timestamp }}
+              Latitude: {{ position.latitude }}<br />
+              Longitude: {{position.longitude }}<br />
+              Accuracy: {{ position.accuracy }} meters<br />
+              Timestamp: {{ position.timestamp }}
             </p>
             <p v-else class="text-center text-danger">{{ errorMessage }}</p>
           </div>
+        </div>
+        <hr class="m-0" />
+        <div class="card-body">
+          <p v-for="pos in history">{{pos.longitude}}</p>
         </div>
       </div>
       <!-- </div>
         </div> -->
     </div>
+    <script>
+      const app = Vue.createApp({
+        data() {
+          return {
+            position: {},
+            loading: true,
+            error: false,
+            errorMessage: "",
+          };
+        },
+        mounted() {
+          // Refresh position every second
+          setInterval(this.refreshPosition, 1000);
+        },
+        methods: {
+          refreshPosition() {
+            if ("geolocation" in navigator) {
+              navigator.geolocation.watchPosition(
+                (position) => {
+                  this.position = {
+                  latitude: position.coords.latitude,
+                  longitude: position.coords.longitude,
+                  accuracy: position.coords.accuracy,
+                  timestamp: new Date(position.timestamp).toISOString(),
+                  }
+
+                  this.loading = false;
+                  this.error = false;
+                },
+                (error) => {
+                  console.error("Error getting location:", error);
+                  this.loading = false;
+                  this.error = true;
+                  this.errorMessage =
+                    "Error getting location. Please make sure you have allowed location access.";
+                }
+              );
+            } else {
+              console.error("Geolocation is not supported by this browser.");
+              this.loading = false;
+              this.error = true;
+              this.errorMessage =
+                "Geolocation is not supported by this browser.";
+            }
+          },
+        },
+      });
+
+      app.mount("#app");
+    </script>
   </body>
 </html>

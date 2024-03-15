@@ -1,0 +1,52 @@
+import navigator from "./navigator.js";
+
+const pos = await navigator.getCurrentPosition()
+console.log(pos);
+
+const app = Vue.createApp({
+  data() {
+    return {
+      loading: true,
+      error: false,
+      errorMessage: "",
+      history: [{ longitude: 1 }],
+    };
+  },
+  methods: {
+    async getLocation() {
+      const position = await navigator.getCurrentPosition();
+      return {
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+        accuracy: position.coords.accuracy,
+        timestamp: new Date(position.timestamp).toISOString(),
+      };
+    },
+  },
+
+  async mounted() {
+    if (!"geolocation" in navigator) {
+      console.error("Geolocation is not supported by this browser.");
+      this.loading = false;
+      this.error = true;
+      this.errorMessage = "Geolocation is not supported by this browser.";
+      return;
+    }
+
+    const position = await this.getLocation();
+    //this.history.push(position);
+    this.position = position;
+
+    this.loading = false;
+    //   } catch (error) {
+    //     console.error("Error getting location:", error);
+    //     this.loading = false;
+    //     this.error = true;
+    //     this.errorMessage =
+    //       "Error getting location. Please make sure you have allowed location access.";
+    //   }
+    // }, 1000);
+  },
+});
+
+app.mount("#app");
