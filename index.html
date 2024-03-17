@@ -14,10 +14,11 @@
       defer
     ></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@3.4.21/dist/vue.global.prod.js"></script>
+    <link rel="stylesheet" href="style.css">
   </head>
 
   <body>
-    <div id="app" class="container mt-5">
+    <div id="app" class="container m-0 p-0 p-sm-3 m-sm-3">
       <!-- <div class="row">
             <div class="col-md-6 offset-md-3"> -->
       <div class="card col-md-8 offset-md-2">
@@ -25,7 +26,7 @@
         <div class="card-body">
           <div v-if="loading" class="text-center">Loading...</div>
           <div v-else>
-            <p v-if="!error" class="text-center">
+            <p v-if="!error">
               Latitude: {{ position.latitude }}<br />
               Longitude: {{position.longitude }}<br />
               Accuracy: {{ position.accuracy }} meters<br />
@@ -34,10 +35,14 @@
             <p v-else class="text-center text-danger">{{ errorMessage }}</p>
           </div>
         </div>
-        <h4 class="card-header">History</h4>
-        <ul class="list-group list-group-flush">
+        <h4 class="card-header card-footer">Map</h4>
+        <div class="card-body">
+          Leaflet goes here
+        </div>
+        <h4 class="card-header card-footer">History</h4>
+        <ul class="list-group list-group-flush position-history">
           <li class="list-group-item" v-for="pos in history">
-            ({{pos.longitude.toFixed(7)}} {{pos.latitude.toFixed(7)}}) []
+            ({{pos.longitude.toFixed(7)}} {{pos.latitude.toFixed(7)}}) [{{pos.accuracy.toFixed(3)}}]
             {{pos.timestamp}}
           </li>
         </ul>
@@ -54,12 +59,12 @@
             loading: true,
             error: false,
             errorMessage: "",
-            historyMax: 30
+            historyMax: 30,
           };
         },
         mounted() {
           // Refresh position every second
-          setInterval(this.refreshPosition, 1000);
+          this.refreshPosition();
         },
         methods: {
           addToHistory(item) {
@@ -69,25 +74,29 @@
             // Check if the length of the array exceeds 100
             if (this.history.length > this.historyMax) {
               // Remove the oldest items
-              this.history = this.history.slice(this.history.length - this.historyMax);
+              this.history = this.history.slice(
+                this.history.length - this.historyMax
+              );
             }
+          },
+
+          onPositionChange(position) {
+            this.position = {
+              latitude: position.coords.latitude,
+              longitude: position.coords.longitude,
+              accuracy: position.coords.accuracy,
+              timestamp: new Date(position.timestamp).toLocaleString(),
+            };
+            this.addToHistory(this.position);
+
+            this.loading = false;
+            this.error = false;
           },
 
           refreshPosition() {
             if ("geolocation" in navigator) {
               navigator.geolocation.watchPosition(
-                (position) => {
-                  this.position = {
-                    latitude: position.coords.latitude,
-                    longitude: position.coords.longitude,
-                    accuracy: position.coords.accuracy,
-                    timestamp: new Date(position.timestamp).toLocaleString(),
-                  };
-                  this.history.push(this.position);
-
-                  this.loading = false;
-                  this.error = false;
-                },
+                (position) => this.onPositionChange(position),
                 (error) => {
                   console.error("Error getting location:", error);
                   this.loading = false;
