@@ -79,7 +79,7 @@ const app = Vue.createApp({
         },
         {
           enableHighAccuracy: this.options.highAccuracy,
-          timeout: 5000,
+          timeout: 10000,
           maximumAge: 0, // 0 = no cache, Infinity = cache forever
         }
       );
