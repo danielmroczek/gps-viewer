@@ -46,6 +46,7 @@ const app = Vue.createApp({
       const { latitude, longitude } = position.coords;
       const latest = this.history.getLatest();
       if (latitude == latest?.latitude && longitude == latest?.longitude) {
+        console.log("Same position as latest point. Skipping.");
         return;
       }
 
@@ -72,14 +73,9 @@ const app = Vue.createApp({
         (position) => this.onPositionChange(position),
         (error) => {
           console.error("Error getting location:", error);
-          this.loading = false;
-          this.error = true;
-          this.errorMessage =
-            "Error getting location. Please make sure you have allowed location access.";
         },
         {
           enableHighAccuracy: this.options.highAccuracy,
-          timeout: 10000,
           maximumAge: 0, // 0 = no cache, Infinity = cache forever
         }
       );
