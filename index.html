@@ -4,66 +4,38 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Real-time GPS Data</title>
-    <!-- Bootstrap 5 CSS -->
-    <link
-      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
-      rel="stylesheet"
-    />
-    <script
-      src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"
-      defer
-    ></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue@3.4.21/dist/vue.global.prod.js"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@3.4.21/dist/vue.global.prod.js"></script>
     <link rel="stylesheet" href="style.css" />
     <script src="script.js" type="module" defer></script>
   </head>
-
-  <body data-bs-theme="dark">
-    <div id="app" class="container m-0 p-0 p-sm-3 m-sm-3">
-      <div class="card col-md-8 offset-md-2">
+  <body>
+    <div id="app">
+      <div class="card">
         <h3 class="card-header">Real-time GPS Data</h3>
-        <div class="card-body">
-          <div v-if="loading" class="text-center">Loading...</div>
+        <div class="card-content">
+          <div v-if="loading" class="loading">Loading...</div>
           <div v-else>
-            <p v-if="!error">
-              Latitude: {{ position.latitude }}<br />
-              Longitude: {{position.longitude }}<br />
-              Accuracy: {{ position.accuracy.toFixed(2) }} meters<br />
-              Timestamp: {{ position.timestamp }}
+            <p v-if="!error" class="gps-data">
+              <span><label>Latitude:</label> {{ position.latitude.toFixed(7) }}°</span>
+              <span><label>Longitude:</label> {{ position.longitude.toFixed(7) }}°</span>
+              <span><label>Accuracy:</label> {{ position.accuracy.toFixed(1) }} m</span>
+              <span><label>Time:</label> {{ position.timestamp }}</span>
             </p>
-            <p v-else class="text-center text-danger">{{ errorMessage }}</p>
+            <p v-else class="error">{{ errorMessage }}</p>
           </div>
-          <!-- <form class="form-check">
-            <input v-model="options.highAccuracy" type="checkbox" class="form-check-input" id="exampleCheck1">
-            <label class="form-check-label" for="exampleCheck1">High accuracy</label>
-          </form>
-          <form>
-            <button type="button" class="btn btn-primary">On</button>&nbsp;
-            <button type="button" class="btn btn-secondary">Off</button>&nbsp;
-            <button type="button" class="btn btn-info">c</button>&nbsp;
-            <button type="button" class="btn btn-primary">Primary</button>
-            <button type="button" class="btn btn-secondary">Secondary</button>
-          </form>
-          <form class="row g-3 align-items-center">
-            <div class="col-auto">
-              <label for="floatingInput" class="form-label">Interval</label>
-            </div>
-            <div class="col-auto">
-              <input type="number" class="form-control" id="floatingInput" placeholder="1000">
-            </div>
-          </form> -->
         </div>
-        <h4 class="card-header card-footer">Map</h4>
-        <div class="card-body ratio ratio-1x1" id="map">
-          <!-- <div id="map"  style="height: 10rem"></div> -->
-        </div>
-        <h4 class="card-header card-footer">History</h4>
-        <ul class="list-group list-group-flush position-history">
-          <li class="list-group-item" v-for="pos in points">
-            ({{pos.longitude.toFixed(7)}} {{pos.latitude.toFixed(7)}})
-            [{{pos.accuracy.toFixed(3)}}] {{pos.timestamp}}
+        <h4 class="card-header">Map</h4>
+        <div class="map-container" id="map"></div>
+        <h4 class="card-header">History</h4>
+        <ul class="history-list">
+          <li v-for="pos in points">
+            <div class="coords">{{ pos.latitude.toFixed(7) }}°, {{ pos.longitude.toFixed(7) }}°</div>
+            <div class="meta">
+              <span class="accuracy">±{{ pos.accuracy.toFixed(1) }}m</span>
+              <span class="time">{{ pos.timestamp }}</span>
+            </div>
           </li>
         </ul>
       </div>

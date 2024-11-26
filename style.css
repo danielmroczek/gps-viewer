@@ -1,12 +1,166 @@
-.position-history {
+:root {
+  --bg-color: #f0f2f5;
+  --card-bg: #ffffff;
+  --text-color: #333333;
+  --border-color: #e0e0e0;
+  --header-bg: #f8f9fa;
+  
+  /* Typography */
+  --font-main: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', sans-serif;
+  --line-height: 1.4;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg-color: #121212;
+    --card-bg: #1e1e1e;
+    --text-color: rgb(173, 181, 189);
+    --border-color: #333;
+    --header-bg: #252525;
+  }
+
+
+  .leaflet-layer,
+  .leaflet-control-zoom-in,
+  .leaflet-control-zoom-out,
+  .leaflet-control-attribution {
+    filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+  }
+}
+
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: var(--font-main);
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  min-height: 100vh;
+  padding: 0;
+  line-height: var(--line-height);
+  -webkit-font-smoothing: antialiased;
+}
+
+#app {
+  display: grid;
+  place-items: center;
+  min-height: 100vh;
+}
+
+.card {
+  background: var(--card-bg);
+  border-radius: 0;
+  box-shadow: none;
+  width: 100%;
+  max-width: 100%;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.card-header {
+  background: var(--header-bg);
+  padding: 0.5rem 1rem;
+  border-bottom: 1px solid var(--border-color);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+h3.card-header {
+  font-size: 1.5rem;
+}
+
+h4.card-header {
+  font-size: 1.25rem;
+}
+
+.card-content {
+  padding: 1rem;
+}
+
+.gps-data {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem;
+  font-size: 1rem;
+}
+
+.gps-data span {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.gps-data label {
+  color: var(--text-color);
+  opacity: 0.7;
+}
+
+.map-container {
+  aspect-ratio: 1;
+  width: 100%;
+}
+
+.history-list {
   max-height: 12rem;
   overflow-y: auto;
   overflow-x: hidden;
+  list-style: none;
+  border-top: 1px solid var(--border-color);
 }
 
-.leaflet-layer,
-.leaflet-control-zoom-in,
-.leaflet-control-zoom-out,
-.leaflet-control-attribution {
-  filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+.history-list li {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.875rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.history-list .coords {
+  font-weight: 500;
+}
+
+.history-list .meta {
+  display: flex;
+  gap: 1rem;
+  font-size: 0.8125rem;
+  opacity: 0.7;
+}
+
+.history-list .accuracy {
+  color: var(--text-color);
+}
+
+.loading {
+  text-align: center;
+  padding: 1rem;
+}
+
+.error {
+  color: #ff4444;
+}
+
+@media (prefers-color-scheme: light) {
+  .error {
+    color: #dc3545;
+  }
+}
+
+
+
+@media (min-width: 600px) {
+  body {
+    padding: 1rem;
+  }
+
+  .card {
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    max-width: 800px;
+    min-height: auto;
+  }
 }
