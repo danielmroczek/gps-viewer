@@ -1,5 +1,3 @@
-// import L from "https://cdn.jsdelivr.net/npm/leaflet@1.9.4/+esm";
-// import { createApp } from 'https://cdn.jsdelivr.net/npm/petite-vue@0.4.1/+esm'
 import History from "./history.js";
 
 const app = Vue.createApp({
