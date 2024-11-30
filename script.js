@@ -1,6 +1,8 @@
+import * as L from 'https://unpkg.com/leaflet@1.9.4/dist/leaflet-src.esm.js';
+import { createApp } from 'https://unpkg.com/vue@3.4.21/dist/vue.esm-browser.prod.js';
 import History from "./history.js";
 
-const app = Vue.createApp({
+const app = createApp({
   data() {
     return {
       position: {},
