@@ -35,9 +35,7 @@ const app = Vue.createApp({
       this.marker = L.marker([0, 0]).addTo(this.map);
       this.accuracyCircle = L.circle([0, 0], {
         radius: 0,
-        color: '#2196F3', // Material color blue 500
-        fillColor: '#2196F3', // Material color blue 500
-        fillOpacity: 0.2
+        className: 'accuracy-circle'
       }).addTo(this.map);
 
       // Check for permissions first
@@ -77,6 +75,12 @@ const app = Vue.createApp({
         default: return 'Error getting location';
       }
     },
+    updateMapPosition(latitude, longitude, accuracy) {
+      this.marker.setLatLng({ lat: latitude, lng: longitude });
+      this.accuracyCircle.setLatLng({ lat: latitude, lng: longitude }).setRadius(accuracy);
+      this.map.setView({ lat: latitude, lng: longitude }, 20);
+      this.map.fitBounds(this.accuracyCircle.getBounds(), { maxZoom: 20 });
+    },
     onPositionChange(position) {
       const { latitude, longitude } = position.coords;
       const latest = this.history.getLatest();
@@ -96,22 +100,7 @@ const app = Vue.createApp({
       this.history.add(point);
       this.position = this.history.reversedWeightedMean();
       
-      this.marker.setLatLng({
-        lat: this.position.latitude,
-        lng: this.position.longitude,
-      });
-      this.accuracyCircle.setLatLng({
-        lat: this.position.latitude,
-        lng: this.position.longitude,
-      }).setRadius(this.position.accuracy);
-
-      // Center map on weighted location
-      this.map.setView([this.position.latitude, this.position.longitude], 20);
-
-      // Center map on first position
-      if (!latest) {
-        this.map.setView([latitude, longitude], 20);
-      }
+      this.updateMapPosition(this.position.latitude, this.position.longitude, this.position.accuracy);
 
       this.loading = false;
       this.error = false;
