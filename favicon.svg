@@ -1,0 +1,18 @@
+<svg width="32" height="32" viewBox="0 0 32 32" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1B5E20"/>
+      <stop offset="100%" stop-color="#0A3D0A"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="32" height="32" fill="url(#bg)" rx="4"/>
+  
+  <!-- Map pin design with transparent center -->
+  <path fill-rule="evenodd" 
+        d="M16 4 C11 4 7 8 7 13 C7 19 16 28 16 28 C16 28 25 19 25 13 C25 8 21 4 16 4 Z
+           M16 9 C18.2 9 20 10.8 20 13 C20 15.2 18.2 17 16 17 C13.8 17 12 15.2 12 13 C12 10.8 13.8 9 16 9 Z" 
+        fill="#ffffff"/>
+  
+</svg>
